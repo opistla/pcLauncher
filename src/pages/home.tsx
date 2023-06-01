@@ -1,6 +1,7 @@
+import { NextPage } from "next/types";
 import { Header, Cards } from '@/components';
 
-const Home = () => {
+const Home: NextPage = () => {
   return (
     <>
       <Header />

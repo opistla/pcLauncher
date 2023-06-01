@@ -1,11 +1,25 @@
-import { Box, Button, Card, CardActions, CardContent, CardHeader, Container, Grid, Typography } from "@mui/material";
+import React, { useContext } from 'react';
+import {
+  Box, Button, Card, CardActions, CardContent, CardHeader, Container, Grid, Typography, styled
+} from '@mui/material';
+import { useRouter } from 'next/router'
+import _ from 'lodash';
+import { ModalContext } from '@/pages/_app';
+import { Login } from '@/components';
+
+type ICard = {
+  title: string;
+  path: string;
+  description: Array<string>;
+  buttonText: string;
+  buttonVariant: string
+}
 
 const Cards = () => {
-
-  const tiers = [
+  const cardList: ICard[] = [
     {
-      title: 'Free',
-      price: '0',
+      title: 'Admin',
+      path: 'admin',
       description: [
         '10 users included',
         '2 GB of storage',
@@ -13,12 +27,11 @@ const Cards = () => {
         'Email support',
       ],
       buttonText: 'Sign up for free',
-      buttonVariant: 'outlined',
+      buttonVariant: 'contained',
     },
     {
-      title: 'Pro',
-      subheader: 'Most popular',
-      price: '15',
+      title: 'Member',
+      path: 'member',
       description: [
         '20 users included',
         '10 GB of storage',
@@ -29,8 +42,8 @@ const Cards = () => {
       buttonVariant: 'contained',
     },
     {
-      title: 'Enterprise',
-      price: '30',
+      title: 'Setting',
+      path: 'setting',
       description: [
         '50 users included',
         '30 GB of storage',
@@ -38,14 +51,55 @@ const Cards = () => {
         'Phone & email support',
       ],
       buttonText: 'Contact us',
-      buttonVariant: 'outlined',
+      buttonVariant: 'contained',
     },
   ];
+
+  // const cardRefs = useRef<null[] | HTMLDivElement[]>([]);
+  const modal = useContext(ModalContext);
+  const router = useRouter();
+
+  type Props = {
+    hoverShadow: number;
+  };
+
+  const options = {
+    shouldForwardProp: (prop: string) => prop !== 'hoverShadow',
+  };
+
+  const StyledCard = styled(
+    Card,
+    options,
+  )<Props>(({ theme, hoverShadow = 1 }) => ({
+    ':hover': {
+      boxShadow: theme.shadows[hoverShadow],
+      background: 'gray'
+    },
+  }));
+
+  const onPage = (item: ICard) => {
+    console.log('item', modal);
+    // router.push(`/${item.path}`);
+    modal.current.show({
+      title: 'Login',
+      Content: <Login />
+    });
+  };
+
+  // const onOverCard = (index: number) => {
+  //   _.forEach(cardRefs.current, (node: null | HTMLDivElement, i: number) => {
+  //     if (i === index) {
+  //       node!.style.backgroundColor = 'red';
+  //     } else {
+  //       node!.style.backgroundColor = '';
+  //     }
+  //   })
+  // };
 
   return (
     <Container maxWidth="md" component="main">
       <Grid container spacing={5} alignItems="flex-end">
-        {tiers.map((tier) => (
+        {cardList.map((tier, i) => (
           <Grid
             item
             key={tier.title}
@@ -53,62 +107,51 @@ const Cards = () => {
             sm={tier.title === 'Enterprise' ? 12 : 6}
             md={4}
           >
-            <Card
-              onMouseOver={() => console.log('hover')}
+            <StyledCard
+              hoverShadow={20}
+              // onMouseOver={() => onOverCard(i)}
+              // sx={{
+              //   minWidth: 275,
+              //   ':hover': {
+              //     boxShadow: 20,
+              //     background: 'red'
+              //   },
+              // }}
             >
               <CardHeader
                 title={tier.title}
-                subheader={tier.subheader}
+                // subheader={tier.subheader}
                 titleTypographyProps={{ align: 'center' }}
                 action={null}
                 subheaderTypographyProps={{
                   align: 'center',
                 }}
                 sx={{
-                  backgroundColor: (theme) =>
-                    theme.palette.mode === 'light'
-                      ? theme.palette.grey[200]
-                      : theme.palette.grey[700],
+                  backgroundColor: '#90caf9'
                 }}
               />
               <CardContent>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'baseline',
-                    mb: 2,
-                  }}
-                >
-                  <Typography component="h2" variant="h3" color="text.primary">
-                    ${tier.price}
+                {tier.description.map((line) => (
+                  <Typography
+                    // component="span"
+                    variant="subtitle1"
+                    align="center"
+                    key={line}
+                  >
+                    {line}
                   </Typography>
-                  <Typography variant="h6" color="text.secondary">
-                    /mo
-                  </Typography>
-                </Box>
-                <ul>
-                  {tier.description.map((line) => (
-                    <Typography
-                      component="li"
-                      variant="subtitle1"
-                      align="center"
-                      key={line}
-                    >
-                      {line}
-                    </Typography>
-                  ))}
-                </ul>
+                ))}
               </CardContent>
               <CardActions>
                 <Button
                   fullWidth
                   variant={tier.buttonVariant as 'outlined' | 'contained'}
+                  onClick={() => onPage(tier)}
                 >
                   {tier.buttonText}
                 </Button>
               </CardActions>
-            </Card>
+            </StyledCard>
           </Grid>
         ))}
       </Grid>
