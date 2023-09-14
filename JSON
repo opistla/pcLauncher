@@ -1,8 +1,75 @@
-누적 데이터 만드는 로직
+# 누적 데이터 만드는 로직
 const nums = [1,2,3,4,5,6,7,8,9];
 _.reduce(nums, (prev, curr) => (
   [...prev, _.sum(_.last(prev), curr)]
 ), [])
 결과 -->> [1,3,6,10,15,21,28,36,45]
 
-============================================
+
+# 슬래쉬 없애기
+val.replace(/\//g, '')
+
+
+# 오브젝트 빈값 제거
+_.pickBy(list, _.identity)
+
+
+# 검색값 앞뒤에 <b>태그 넣기
+const search = 'you'
+const str = 'iamaboyyouareagirlyou';
+const regex = new RegExp(`(${search})`, 'igm');
+str.replace(regex, '<b>$1</b>')
+
+
+# 이메일 정규식
+const email = 'opistla1@naver.com';
+const reg = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+reg.test(email);
+
+
+# 패스워드 룰(8~20자리, 문자+특수기호+숫자)
+const password = 'showmen121@#!'
+const passwordRules = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,20}$/;
+passwordRules.test(password);
+
+
+# 폰 번호 숫자와 - 만
+const phone = '010-1111-2222';
+const numPattern = /[0-9-]$/;
+numPattern.test(phone);
+
+
+# 파일다운로드
+  fileDownload: (path, fileName) => {
+    return commonService.pdfDownload(path)
+      .then(fileData => {
+        const file = new Blob([fileData], { type: 'application/pdf' });
+        // process to auto download it
+        const fileURL = URL.createObjectURL(file);
+        const link = document.createElement('a');
+        link.href = fileURL;
+        link.download = fileName;
+        link.click();
+        URL.revokeObjectURL(link);
+      });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
