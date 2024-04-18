@@ -1,0 +1,29 @@
+더보기로 list에 list를 더 할때 성능 이슈로 인한 memo 처리
+
+<tbody>
+  {
+    _.map(data, (item, i) => (
+      <TableRow
+        key={i}
+        i={i}
+        item={item}
+      />
+    ))
+  }
+</tbody>
+
+
+const TableRow = ({ i, item }) => useMemo(() => {
+  return (
+    <tr key={i}>
+      <td className="al_c">{i + 1}</td>
+      <td className="al_c">{item.start_time}</td>
+      <td>{item.user_id}</td>
+      <td className="al_c">{item.sm_name}</td>
+      <td>{item.sm_dept}</td>
+      <td>{item.caption}</td>
+      {/* <td><a href={item.url_blob}>{item.url_blob}</a></td> */}
+      <td><a href={item.url_blob}><img style={{ width: '100px' }} src={item.url_blob} /></a></td>
+    </tr>
+  )
+}, []);
